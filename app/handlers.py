@@ -20,22 +20,18 @@ load_dotenv()
 PARAM = os.getenv('START_PARAM')
 
 NOT_ALLOWED = 'It seems that you are not allowed to use this bot :)'
+SELECT_TOKEN = '==== Hey! Select a token ====\n'
 
 
 @router.message(CommandStart(deep_link=True))
 async def cmd_start(message: Message, command: CommandObject):
     args = command.args
     if args == PARAM:
-        await message.answer(f'Hey!\nSelect a token:')
+        token_names = list(map(lambda x: x['name'], token_middleware.tokens))
+        keyboard = generate_inline_keyboard(token_names)
+        await message.answer(SELECT_TOKEN, reply_markup=keyboard)
     else:
         await message.answer(NOT_ALLOWED)
-
-
-@router.message(CommandStart())
-async def cmd_start(message: Message):
-    token_names = list(map(lambda x: x['name'], token_middleware.tokens))
-    keyboard = generate_inline_keyboard(token_names)
-    await message.answer(f'Hey!\nSelect a token:', reply_markup=keyboard)
 
 
 @router.callback_query(lambda c: c.data == 'tokens_list')
@@ -45,7 +41,7 @@ async def process_tokens_list_callback(callback_query: types.CallbackQuery):
     await bot.edit_message_text(
         chat_id=callback_query.message.chat.id,
         message_id=callback_query.message.message_id,
-        text='Select a token:',
+        text=SELECT_TOKEN,
         reply_markup=keyboard
     )
 
@@ -89,10 +85,11 @@ async def process_item_callback(callback_query: types.CallbackQuery):
              f"TVL change weight: {token_metrics['tvl_change_weight']} %\n"
              f"Price change weight: {token_metrics['price_change_weight']} %\n\n"
              
-             f"New holders relative: {token_metrics['new_holders_relative']}\n"
-             f"TVL change relative: {token_metrics['tvl_change_relative']}\n"
-             f"Price change relative: {token_metrics['price_change_relative']}\n\n"
+             f"New holders score: {token_metrics['new_holders_relative']}\n"
+             f"TVL change score: {token_metrics['tvl_change_relative']}\n"
+             f"Price change score: {token_metrics['price_change_relative']}\n\n"
 
+             f"token_score = sum(score * weight) for each param\n"
              f"Score from request: {token['score']}\n"
              f"Score calculated: {token_metrics['score']}\n"
     )
@@ -101,3 +98,12 @@ async def process_item_callback(callback_query: types.CallbackQuery):
         message_id=callback_query.message.message_id,
         reply_markup=to_list_keyboard
     )
+
+
+@router.message()
+async def cmd_start(message: Message):
+    await message.answer(NOT_ALLOWED)
+
+# await message.answer('The Open League 5\nTokens metrics bot',
+# reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
+# text='Get access', url='https://t.me/gpirj32xk253hjk3_bot?start=dont-share-this-link')]]))

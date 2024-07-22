@@ -6,16 +6,12 @@ ITEMS_PER_PAGE = 5
 def generate_inline_keyboard(items, page=0):
     keyboard = []
     start = page * ITEMS_PER_PAGE * 2
-    end = start + ITEMS_PER_PAGE * 2
+    end = start + ITEMS_PER_PAGE
 
-    line = []
-    for item in items[start:end]:
-        if (items.index(item) + 1) % 2 == 0:
-            line.append(InlineKeyboardButton(text=item, callback_data=f"item:{item}"))
-            keyboard.append(line)
-            line = []
-        else:
-            line.append(InlineKeyboardButton(text=item, callback_data=f"item:{item}"))
+    for i in range(start, end, 1):
+        keyboard.append([InlineKeyboardButton(text=f'{i + 1}. {items[i]}', callback_data=f"item:{items[i]}"),
+                         InlineKeyboardButton(text=f'{i  + 1 + ITEMS_PER_PAGE}. {items[i + ITEMS_PER_PAGE]}',
+                                              callback_data=f"item:{items[i + ITEMS_PER_PAGE]}")])
 
     navigation_buttons = []
     if page > 0:
