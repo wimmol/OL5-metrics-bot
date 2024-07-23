@@ -1,3 +1,4 @@
+import copy
 import os
 
 from aiogram.filters import CommandStart, CommandObject
@@ -92,7 +93,7 @@ async def process_edit_message(message: Message, state: FSMContext):
 @router.callback_query(lambda c: c.data == 'calculate')
 async def process_calculate_callback(callback_query: types.CallbackQuery, state: FSMContext):
     current_state = await state.get_data()
-    simulated_tokens = token_middleware.tokens_data
+    simulated_tokens = copy.deepcopy(token_middleware.tokens_data)
     for metric in current_state['metrics']:
         if metric == 'new_current_price':
             simulated_tokens.input_new_current_price(current_state['token_name'], float(current_state['metrics'][metric]))
