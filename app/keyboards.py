@@ -25,6 +25,32 @@ def generate_inline_keyboard(items, page=0):
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-token_keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
-    text='To tokens list', callback_data='tokens_list')], [InlineKeyboardButton(
-        text='Simulate', callback_data='simulate')]])
+def generate_token_keyboard(token_name):
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
+        text='To tokens list', callback_data='tokens_list')], [InlineKeyboardButton(
+            text='Simulate', callback_data=f'simulate:{token_name}')]])
+
+
+choose_edit_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(text='new holders', callback_data='edit:new_current_new_holders'),
+    ],
+    [
+        InlineKeyboardButton(text='current tvl', callback_data='edit:new_current_tvl'),
+        InlineKeyboardButton(text='current price', callback_data='edit:new_current_price')
+    ],
+    [
+        InlineKeyboardButton(text='max new holders', callback_data='edit:max_new_holders'),
+    ],
+    [
+        InlineKeyboardButton(text='max tvl change', callback_data='edit:max_tvl_change'),
+        InlineKeyboardButton(text='max price change', callback_data='edit:max_price_change'),
+    ],
+    [
+        InlineKeyboardButton(text='min tvl change', callback_data='edit:min_tvl_change'),
+        InlineKeyboardButton(text='min price change', callback_data='edit:min_price_change'),
+    ],
+    [
+        InlineKeyboardButton(text='Calculate', callback_data='calculate'),
+    ]
+])
