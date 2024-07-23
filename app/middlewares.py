@@ -5,15 +5,16 @@ import time
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from app.calc import TokensData
+from app.classes.TokenData import TokensData
 from app.requests import fetchTokensData
 
 
 class TokensMiddleware(BaseMiddleware):
     def setTokens(self):
-        self.tokens = fetchTokensData()
-        self.last_request_time = time.time()
-        self.tokens_data = TokensData(self.tokens)
+        if time.time() - self.last_request_time > 600:
+            self.tokens = fetchTokensData()
+            self.last_request_time = time.time()
+            self.tokens_data = TokensData(self.tokens)
 
     def __init__(self) -> None:
         print('Middleware initialized')
@@ -29,9 +30,7 @@ class TokensMiddleware(BaseMiddleware):
             data: Dict[str, Any]
     ) -> Any:
         print('Middleware work')
-        if time.time() - self.last_request_time > 600:
-            print('Middleware fetch')
-            self.setTokens()
+        self.setTokens()
 
         return await handler(event, data)
 

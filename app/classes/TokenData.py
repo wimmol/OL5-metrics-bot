@@ -41,18 +41,22 @@ class TokensData:
         tvl_change_weight = 30 + (30 - price_change_weight) * 3 / 7
         new_holders_weight = 40 + (30 - price_change_weight) * 4 / 7
         new_holders_relative = token['new_users_min_amount'] / self.max_new_holders
-        tvl_change_relative = (token['token_tvl_change'] - self.min_tvl_change) / (self.max_tvl_change - self.min_tvl_change)
-        price_change_relative = (token['price_change_normed'] - self.min_price_change) / (self.max_price_change - self.min_price_change)
+        tvl_change_relative = (token['token_tvl_change'] - self.min_tvl_change) / (
+                self.max_tvl_change - self.min_tvl_change)
+        price_change_relative = (token['price_change_normed'] - self.min_price_change) / (
+                self.max_price_change - self.min_price_change)
         score = new_holders_weight * new_holders_relative + tvl_change_weight * tvl_change_relative + \
             price_change_weight * price_change_relative
 
-        return {
-            'tvl_category_coefficient': tvl_category_coefficient,
-            'new_holders_weight': new_holders_weight,
-            'tvl_change_weight': tvl_change_weight,
-            'price_change_weight': price_change_weight,
-            'new_holders_relative': new_holders_relative,
-            'tvl_change_relative': tvl_change_relative,
-            'price_change_relative': price_change_relative,
-            'score': score
-        }
+        token['tvl_category_coefficient'] = tvl_category_coefficient
+        token['new_holders_weight'] = new_holders_weight
+        token['tvl_change_weight'] = tvl_change_weight
+        token['price_change_weight'] = price_change_weight
+        token['new_holders_relative'] = new_holders_relative
+        token['tvl_change_relative'] = tvl_change_relative
+        token['price_change_relative'] = price_change_relative
+        token['calc_score'] = score
+
+        self.tokens = map(lambda x: x if x['name'] != token_name else token, self.tokens)
+
+        return token

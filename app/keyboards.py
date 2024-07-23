@@ -10,7 +10,7 @@ def generate_inline_keyboard(items, page=0):
 
     for i in range(start, end, 1):
         keyboard.append([InlineKeyboardButton(text=f'{i + 1}. {items[i]}', callback_data=f"item:{items[i]}"),
-                         InlineKeyboardButton(text=f'{i  + 1 + ITEMS_PER_PAGE}. {items[i + ITEMS_PER_PAGE]}',
+                         InlineKeyboardButton(text=f'{i + 1 + ITEMS_PER_PAGE}. {items[i + ITEMS_PER_PAGE]}',
                                               callback_data=f"item:{items[i + ITEMS_PER_PAGE]}")])
 
     navigation_buttons = []
@@ -25,5 +25,6 @@ def generate_inline_keyboard(items, page=0):
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-to_list_keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
-    text='To tokens list', callback_data='tokens_list')]])
+token_keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
+    text='To tokens list', callback_data='tokens_list')], [InlineKeyboardButton(
+        text='Simulate', callback_data='simulate')]])
